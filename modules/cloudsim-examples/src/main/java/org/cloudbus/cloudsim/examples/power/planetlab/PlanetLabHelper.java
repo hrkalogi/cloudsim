@@ -1,7 +1,9 @@
 package org.cloudbus.cloudsim.examples.power.planetlab;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +51,30 @@ public class PlanetLabHelper {
 		for (int i = 0; i < files.length; i++) {
 			Cloudlet cloudlet = null;
 			try {
+				BufferedReader input = new BufferedReader(new FileReader(files[i].getAbsolutePath()));
+				/*****************************Google traces extension****************************
+				*Read the files that contain the information of the VMs
+				*Each file contains information for one VM 
+				*The first line indicates the VM max requirements for CPU and RAM. The following lines are the load of
+				*the VM for each scheduling period.
+				*/
+				
+				if (Constants.GOOGLE_TRACES) {
+					String line = input.readLine();
+					String[] stringArray = line.split(" ");
+					double[] doubleArray = new double[stringArray.length];
+					
+					for (int j = 0; j < stringArray.length; j++) {
+						String numberAsString = stringArray[j];
+						doubleArray[j] = Double.parseDouble(numberAsString);
+					}
+					
+					Constants.VM_cpu.add(doubleArray[0]);
+					Constants.VM_ram.add(doubleArray[1]);
+					}
+					
+				/****************************Google traces extension end**************************/
+
 				cloudlet = new Cloudlet(
 						i,
 						Constants.CLOUDLET_LENGTH,
@@ -56,8 +82,9 @@ public class PlanetLabHelper {
 						fileSize,
 						outputSize,
 						new UtilizationModelPlanetLabInMemory(
-								files[i].getAbsolutePath(),
+								input,
 								Constants.SCHEDULING_INTERVAL), utilizationModelNull, utilizationModelNull);
+				input.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.exit(0);

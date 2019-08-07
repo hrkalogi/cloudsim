@@ -3,6 +3,7 @@ package org.cloudbus.cloudsim.examples.container;
 import org.cloudbus.cloudsim.UtilizationModelPlanetLabInMemory;
 import org.cloudbus.cloudsim.examples.power.Constants;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 
 /**
@@ -10,8 +11,8 @@ import java.io.IOException;
  */
 public class UtilizationModelPlanetLabInMemoryExtended extends UtilizationModelPlanetLabInMemory {
 
-    public UtilizationModelPlanetLabInMemoryExtended(String inputPath, double schedulingInterval) throws NumberFormatException, IOException {
-        super(inputPath, schedulingInterval);
+    public UtilizationModelPlanetLabInMemoryExtended(BufferedReader input, double schedulingInterval) throws NumberFormatException, IOException {
+        super(input, schedulingInterval);
     }
 
     public UtilizationModelPlanetLabInMemoryExtended(String inputPath, double schedulingInterval, int dataSamples) throws NumberFormatException, IOException {

@@ -117,7 +117,9 @@ public class PowerDatacenter extends Datacenter {
 						}
 
 						targetHost.addMigratingInVm(vm);
-						incrementMigrationCount();
+						
+						if (vm.getRam() != 0)
+							incrementMigrationCount();
 
 						/** VM migration delay = RAM / bandwidth **/
 						// we use BW / 2 to model BW available for migration purposes, the other

@@ -52,6 +52,35 @@ import org.cloudbus.cloudsim.util.MathUtil;
  * @author Anton Beloglazov
  */
 public class Helper {
+	
+	/*****************************Google traces extension****************************
+	 * In order to manage Google traces in CloudSim, we apply the following strategy when we create VMs and nodes:
+	 * 1. For both VMs and nodes the pes is set to 1.
+	 * 2. The MIPS variable has the number of the allocated cores for VMs and the number of the cores for the nodes.
+	 * We make this convention in order to avoid major changes at CloudSim because the CPU usage for Google traces
+	 * is expressed in relation to the number of the cores.
+	 */
+	
+	/*This function finds the nodes that have the highest capacity of a specific resource. */
+	
+	static int maxIndexNode(int component) {
+		int index = 0;
+		
+		if (component == 0) {
+			for (int i=0; i<Constants.HOST_PES.length-1; i++) {
+				if (Constants.HOST_PES[i] < Constants.HOST_PES[i+1])
+					index = i+1;
+			}
+		}
+		else if (component == 1) {
+			for (int i=0; i<Constants.HOST_RAM.length-1; i++) {
+				if (Constants.HOST_RAM[i] < Constants.HOST_RAM[i+1])
+					index = i+1;
+			}
+		}
+		
+		return index;
+	}
 
 	/**
 	 * Creates the vm list.
@@ -65,17 +94,35 @@ public class Helper {
 		List<Vm> vms = new ArrayList<Vm>();
 		for (int i = 0; i < vmsNumber; i++) {
 			int vmType = i / (int) Math.ceil((double) vmsNumber / Constants.VM_TYPES);
+			double VM_mips;
+			int VM_pes, VM_ram;
+			
+			int index_cpu = maxIndexNode(0);
+			int index_ram = maxIndexNode(1);
+			
+			if (Constants.GOOGLE_TRACES) {
+				VM_mips = Constants.VM_cpu.get(i) * Constants.HOST_PES[index_cpu];
+				VM_pes = 1;
+				VM_ram = (int)(Constants.VM_ram.get(i) * Constants.HOST_RAM[index_ram]);
+			}
+			else {
+				VM_mips = Constants.VM_MIPS[vmType];
+				VM_pes = Constants.VM_PES[vmType];
+				VM_ram = Constants.VM_RAM[vmType];
+			}
+
+			
 			vms.add(new PowerVm(
 					i,
 					brokerId,
-					Constants.VM_MIPS[vmType],
-					Constants.VM_PES[vmType],
-					Constants.VM_RAM[vmType],
+					VM_mips,
+					VM_pes,
+					VM_ram,
 					Constants.VM_BW,
 					Constants.VM_SIZE,
 					1,
 					"Xen",
-					new CloudletSchedulerDynamicWorkload(Constants.VM_MIPS[vmType], Constants.VM_PES[vmType]),
+					new CloudletSchedulerDynamicWorkload(VM_mips, VM_pes),
 					Constants.SCHEDULING_INTERVAL));
 		}
 		return vms;
@@ -88,14 +135,23 @@ public class Helper {
 	 * 
 	 * @return the list< power host>
 	 */
+	
+	/*****************************Google traces extension****************************/
+	
 	public static List<PowerHost> createHostList(int hostsNumber) {
 		List<PowerHost> hostList = new ArrayList<PowerHost>();
 		for (int i = 0; i < hostsNumber; i++) {
 			int hostType = i % Constants.HOST_TYPES;
 
 			List<Pe> peList = new ArrayList<Pe>();
-			for (int j = 0; j < Constants.HOST_PES[hostType]; j++) {
-				peList.add(new Pe(j, new PeProvisionerSimple(Constants.HOST_MIPS[hostType])));
+			
+			if (Constants.GOOGLE_TRACES) {
+				peList.add(new Pe(0, new PeProvisionerSimple(Constants.HOST_PES[hostType])));
+			}
+			else {
+				for (int j = 0; j < Constants.HOST_PES[hostType]; j++) {
+					peList.add(new Pe(j, new PeProvisionerSimple(Constants.HOST_MIPS[hostType])));
+				}
 			}
 
 			hostList.add(new PowerHostUtilizationHistory(
@@ -109,6 +165,8 @@ public class Helper {
 		}
 		return hostList;
 	}
+	
+	/*****************************GOOGLE TRACES EXTENSION END****************************/
 
 	/**
 	 * Creates the broker.

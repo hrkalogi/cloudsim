@@ -38,7 +38,9 @@ import org.cloudbus.cloudsim.container.vmSelectionPolicies.PowerContainerVmSelec
 import org.cloudbus.cloudsim.container.vmSelectionPolicies.PowerContainerVmSelectionPolicyMaximumUsage;
 import org.cloudbus.cloudsim.core.CloudSim;
 
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -423,10 +425,12 @@ public class ContainerCloudSimExample1 {
                 if (createdCloudlets < numberOfCloudlets) {
                     ContainerCloudlet cloudlet = null;
 
+                    BufferedReader input = new BufferedReader(new FileReader(files[i].getAbsolutePath()));
+                    
                     try {
                         cloudlet = new ContainerCloudlet(IDs.pollId(ContainerCloudlet.class), ConstantsExamples.CLOUDLET_LENGTH, 1,
                                 fileSize, outputSize,
-                                new UtilizationModelPlanetLabInMemoryExtended(files[i].getAbsolutePath(), 300.0D),
+                                new UtilizationModelPlanetLabInMemoryExtended(input, 300.0D),
                                 utilizationModelNull, utilizationModelNull);
                     } catch (Exception var13) {
                         var13.printStackTrace();

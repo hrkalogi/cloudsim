@@ -140,9 +140,13 @@ public abstract class VmScheduler {
 		List<Double> mipsMap = getAllocatedMipsForVm(vm);
 		if (mipsMap != null) {
 			for (double mips : mipsMap) {
-				allocated += mips;
+				if (mips < 10e-7)
+					allocated += 0.0;
+				else
+					allocated += mips;
 			}
 		}
+
 		return allocated;
 	}
 

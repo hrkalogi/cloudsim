@@ -154,7 +154,9 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
 						}
 
 						targetHost.addMigratingInVm(vm);
-						incrementMigrationCount();
+						
+						if (vm.getRam() != 0)
+							incrementMigrationCount();
 
 						/** VM migration delay = RAM / bandwidth + C (C = 10 sec) **/
 						send(

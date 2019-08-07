@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.cloudbus.cloudsim.core.CloudSim;
+
 /**
  * Represents a Virtual Machine (VM) that runs inside a Host, sharing a hostList with other VMs. It processes
  * cloudlets. This processing happens according to a policy, defined by the CloudletScheduler. Each
@@ -357,7 +359,10 @@ public class Vm {
 	 * @post $none
 	 */
 	public int getRam() {
-		return ram;
+        if (getTotalUtilizationOfCpuMips(CloudSim.clock()) < 10e-7)
+        	return 0;
+        
+        return ram;
 	}
 
 	/**

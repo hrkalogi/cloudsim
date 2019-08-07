@@ -1,8 +1,11 @@
 package org.cloudbus.cloudsim;
 
 import java.io.BufferedReader;
+
 import java.io.FileReader;
 import java.io.IOException;
+
+import org.cloudbus.cloudsim.examples.power.Constants;
 
 /**
  * Defines the resource utilization model based on 
@@ -25,16 +28,27 @@ public class UtilizationModelPlanetLabInMemory implements UtilizationModel {
 	 * @throws NumberFormatException the number format exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public UtilizationModelPlanetLabInMemory(String inputPath, double schedulingInterval)
+	public UtilizationModelPlanetLabInMemory(BufferedReader input, double schedulingInterval)
 			throws NumberFormatException,
 			IOException {
 		data = new double[289];
 		setSchedulingInterval(schedulingInterval);
-		BufferedReader input = new BufferedReader(new FileReader(inputPath));
+		
 		int n = data.length;
-		for (int i = 0; i < n - 1; i++) {
-			data[i] = Integer.valueOf(input.readLine()) / 100.0;
+		
+		/*****************************Google traces extension****************************/
+		if (Constants.GOOGLE_TRACES) {
+			for (int i = 0; i < n - 1; i++) {
+				data[i] = Double.valueOf(input.readLine());
+			}
 		}
+		else {
+			for (int i = 0; i < n - 1; i++) {
+				data[i] = Integer.valueOf(input.readLine()) / 100.0;
+			}
+		}
+		/****************************Google traces extension end**************************/
+		
 		data[n - 1] = data[n - 2];
 		input.close();
 	}

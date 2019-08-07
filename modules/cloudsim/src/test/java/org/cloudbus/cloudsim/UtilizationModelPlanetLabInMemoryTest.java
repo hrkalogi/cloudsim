@@ -2,6 +2,9 @@ package org.cloudbus.cloudsim;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,8 +18,8 @@ public class UtilizationModelPlanetLabInMemoryTest {
 
 	@Before
 	public void setUp() throws Exception {
-		utilizationModel = new UtilizationModelPlanetLabInMemory(getClass().getClassLoader()
-				.getResource(FILE).getPath(), SCHEDULING_INTERVAL);
+		BufferedReader input = new BufferedReader(new FileReader(getClass().getClassLoader().getResource(FILE).getPath()));
+		utilizationModel = new UtilizationModelPlanetLabInMemory(input, SCHEDULING_INTERVAL);
 	}
 
 	@Test

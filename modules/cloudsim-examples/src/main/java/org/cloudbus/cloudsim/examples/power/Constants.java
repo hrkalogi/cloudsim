@@ -1,8 +1,11 @@
 package org.cloudbus.cloudsim.examples.power;
 
 import org.cloudbus.cloudsim.power.models.PowerModel;
+
 import org.cloudbus.cloudsim.power.models.PowerModelSpecPowerHpProLiantMl110G4Xeon3040;
 import org.cloudbus.cloudsim.power.models.PowerModelSpecPowerHpProLiantMl110G5Xeon3075;
+
+import java.util.ArrayList;
 
 /**
  * If you are using any algorithms, policies or workload included in the power package, please cite
@@ -18,15 +21,19 @@ import org.cloudbus.cloudsim.power.models.PowerModelSpecPowerHpProLiantMl110G5Xe
  */
 public class Constants {
 
+	public final static boolean GOOGLE_TRACES = false;
 	public final static boolean ENABLE_OUTPUT = true;
 	public final static boolean OUTPUT_CSV    = false;
 
 	public final static double SCHEDULING_INTERVAL = 300;
-	public final static double SIMULATION_LIMIT = 24 * 60 * 60;
-
+	public final static double SIMULATION_LIMIT = 60 * 60;
+	
 	public final static int CLOUDLET_LENGTH	= 2500 * (int) SIMULATION_LIMIT;
 	public final static int CLOUDLET_PES	= 1;
 
+	public static ArrayList<Double> VM_cpu = new ArrayList<Double>();
+	public static ArrayList<Double> VM_ram = new ArrayList<Double>();
+	
 	/*
 	 * VM instance types:
 	 *   High-Memory Extra Large Instance: 3.25 EC2 Compute Units, 8.55 GB // too much MIPS
