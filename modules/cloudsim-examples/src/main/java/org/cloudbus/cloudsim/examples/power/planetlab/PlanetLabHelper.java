@@ -53,10 +53,12 @@ public class PlanetLabHelper {
 			try {
 				BufferedReader input = new BufferedReader(new FileReader(files[i].getAbsolutePath()));
 				/*****************************Google traces extension****************************
-				*Read the files that contain the information of the VMs
+				*It reads the files that contain the information of the VMs
 				*Each file contains information for one VM 
-				*The first line indicates the VM max requirements for CPU and RAM. The following lines are the load of
-				*the VM for each scheduling period.
+				*The first line indicates the VM max requirements for CPU and RAM. The following lines are the CPU 
+				*usage of the VM for each scheduling period.
+				*
+				*In the following extension we parse the first line of each file to retrieve the VM requirements.
 				*/
 				
 				if (Constants.GOOGLE_TRACES) {

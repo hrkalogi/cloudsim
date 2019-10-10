@@ -21,12 +21,12 @@ import java.util.ArrayList;
  */
 public class Constants {
 
-	public final static boolean GOOGLE_TRACES = false;
+	public final static boolean GOOGLE_TRACES = true;
 	public final static boolean ENABLE_OUTPUT = true;
 	public final static boolean OUTPUT_CSV    = false;
 
 	public final static double SCHEDULING_INTERVAL = 300;
-	public final static double SIMULATION_LIMIT = 60 * 60;
+	public final static double SIMULATION_LIMIT =9600;
 	
 	public final static int CLOUDLET_LENGTH	= 2500 * (int) SIMULATION_LIMIT;
 	public final static int CLOUDLET_PES	= 1;

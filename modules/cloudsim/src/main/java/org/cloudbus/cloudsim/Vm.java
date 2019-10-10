@@ -359,7 +359,7 @@ public class Vm {
 	 * @post $none
 	 */
 	public int getRam() {
-        if (getTotalUtilizationOfCpuMips(CloudSim.clock()) < 10e-7)
+        if (getTotalUtilizationOfCpuMips(CloudSim.clock()) < 10e-6)
         	return 0;
         
         return ram;

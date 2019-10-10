@@ -37,3 +37,10 @@ The downloaded package contains all the source code, examples, jars, and API htm
 
 
 [![](http://www.cloudbus.org/logo/cloudbuslogo-v5a.png)](http://cloudbus.org/)
+
+# Google traces support #
+
+This version of CloudSim supports Google traces as input. In order to use Google traces as input, first run the parser at the following link in order to produce input files with the required format for CloudSim (the following link contains also instructions for the use of the parser):
+https://github.com/hrkalogi/google_traces_parser.git
+
+  * Christos Kalogirou, Panos Koutsovasilis, Christos D. Antonopoulos, Nikolaos Bellas, Spyros Lalis, Srikumar Venugopal and Christian Pinto, [Exploiting CPU Voltage Margins to Increase the Profit of Cloud Infrastructure Providers], Proceedings of the 19th IEEE/ACM International Symposium on Cluster, Cloud and Grid Computing (CCGRID), Larnaca, Cyprus, May 14-17, 2019.

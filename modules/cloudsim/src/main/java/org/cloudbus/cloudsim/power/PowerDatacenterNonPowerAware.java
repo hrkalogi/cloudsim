@@ -155,9 +155,16 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
 
 						targetHost.addMigratingInVm(vm);
 						
+						/***********Google traces extension start****************
+						 * This extension is implemented for handling Google traces. If a VM is not active 
+						 * during a scheduling period, we set the memory request to 0, so we do not count
+						 * any SLA violation penalties from migrations as long as it is not active.
+						 */
+						
 						if (vm.getRam() != 0)
 							incrementMigrationCount();
 
+						/***********Google traces extension end******************
 						/** VM migration delay = RAM / bandwidth + C (C = 10 sec) **/
 						send(
 								getId(),

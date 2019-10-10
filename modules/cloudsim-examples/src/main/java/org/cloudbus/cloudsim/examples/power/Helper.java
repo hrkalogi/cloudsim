@@ -54,11 +54,24 @@ import org.cloudbus.cloudsim.util.MathUtil;
 public class Helper {
 	
 	/*****************************Google traces extension****************************
-	 * In order to manage Google traces in CloudSim, we apply the following strategy when we create VMs and nodes:
-	 * 1. For both VMs and nodes the pes is set to 1.
-	 * 2. The MIPS variable has the number of the allocated cores for VMs and the number of the cores for the nodes.
-	 * We make this convention in order to avoid major changes at CloudSim because the CPU usage for Google traces
-	 * is expressed in relation to the number of the cores.
+	 * This extension is implemented in order to estimate the VM requirements when Google traces are selected.
+	 * Note that we do not change the calculation of the VM requirements for planetlab traces. This extension is
+	 * only applied to Google traces
+	 * 
+	 * First, we have implemented the maxIndexNode function, which finds the nodes with the highest capacity
+	 * for the processor and the memory. We assume that the node with the highest capacity for the processor
+	 * is the node that has the most cores.
+	 * 
+	 * Second, Google traces use a CPU usage (it is expressed as the usage of the cores for the processor
+	 * rather than MIPS to quantify the utilization of the processor) and we implemented the following 
+	 * extensions at the createVmList function:
+	 * 1. The pes (VM_pes variable) is always set to 1.
+	 * 2. The VM_usage variable describes the CPU usage of each VM.
+	 *
+	 * In other words, for Google traces we need only one variable (VM_usage) for the estimation of the
+	 * utilization, as we can extract this information directly from Google traces. However, we keep 
+	 * VM_pes variable and we set it with 1, because it is required for planetlab traces and we try to limit
+	 * the extensions and reuse the PowerVm function.
 	 */
 	
 	/*This function finds the nodes that have the highest capacity of a specific resource. */
@@ -94,19 +107,19 @@ public class Helper {
 		List<Vm> vms = new ArrayList<Vm>();
 		for (int i = 0; i < vmsNumber; i++) {
 			int vmType = i / (int) Math.ceil((double) vmsNumber / Constants.VM_TYPES);
-			double VM_mips;
+			double VM_usage;
 			int VM_pes, VM_ram;
 			
 			int index_cpu = maxIndexNode(0);
 			int index_ram = maxIndexNode(1);
 			
 			if (Constants.GOOGLE_TRACES) {
-				VM_mips = Constants.VM_cpu.get(i) * Constants.HOST_PES[index_cpu];
+				VM_usage = Constants.VM_cpu.get(i) * Constants.HOST_PES[index_cpu];
 				VM_pes = 1;
 				VM_ram = (int)(Constants.VM_ram.get(i) * Constants.HOST_RAM[index_ram]);
 			}
 			else {
-				VM_mips = Constants.VM_MIPS[vmType];
+				VM_usage = Constants.VM_MIPS[vmType];
 				VM_pes = Constants.VM_PES[vmType];
 				VM_ram = Constants.VM_RAM[vmType];
 			}
@@ -115,14 +128,14 @@ public class Helper {
 			vms.add(new PowerVm(
 					i,
 					brokerId,
-					VM_mips,
+					VM_usage,
 					VM_pes,
 					VM_ram,
 					Constants.VM_BW,
 					Constants.VM_SIZE,
 					1,
 					"Xen",
-					new CloudletSchedulerDynamicWorkload(VM_mips, VM_pes),
+					new CloudletSchedulerDynamicWorkload(VM_usage, VM_pes),
 					Constants.SCHEDULING_INTERVAL));
 		}
 		return vms;
@@ -136,7 +149,12 @@ public class Helper {
 	 * @return the list< power host>
 	 */
 	
-	/*****************************Google traces extension****************************/
+	/*****************************Google traces extension****************************
+	 * This extension is made for the creation of nodes. For Google traces, we do not create
+	 * nodes with a specific number of cores and MIPS for each core, as it is the case with the
+	 * planetlab traces. For Google traces we calculate the capacity of each node according 
+	 * to the number of the cores.
+	 */
 	
 	public static List<PowerHost> createHostList(int hostsNumber) {
 		List<PowerHost> hostList = new ArrayList<PowerHost>();

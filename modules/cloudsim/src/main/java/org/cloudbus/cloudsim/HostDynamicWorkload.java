@@ -108,6 +108,17 @@ public class HostDynamicWorkload extends Host {
 							+ ": %.2f", CloudSim.clock(), totalRequestedMips - totalAllocatedMips);
 				}
 
+				/***********Google traces extension start****************
+				 * This extension is implemented for handling Google traces. If a VM is not active 
+				 * during a scheduling period, we set the memory request to 0, so we do not count
+				 * any SLA violation penalties from migrations as long as it is not active.
+				 */
+				
+				if (vm.getRam() == 0)
+					totalAllocatedMips = totalRequestedMips;
+				
+				/***********Google traces extension ****************/
+
 				vm.addStateHistoryEntry(
 						currentTime,
 						totalAllocatedMips,
